@@ -1,0 +1,111 @@
+# ============================================================================
+# Recon Pipeline Configuration
+# ============================================================================
+# All settings for the modular reconnaissance pipeline.
+# Each phase can be enabled/disabled, tuned, and configured independently.
+# ============================================================================
+
+# Global settings
+global:
+  target: ""                    # Target domain (e.g., example.com)
+  output_dir: "./recon"         # Base output directory
+  log_level: "info"             # debug, info, warn, error
+  log_file: "./recon/08_reports/pipeline.log"
+
+# Tool paths (override only if custom installs)
+tools:
+  subfinder: "/go/bin/subfinder"
+  httpx: "/go/bin/httpx"
+  katana: "/go/bin/katana"
+  gau: "/go/bin/gau"
+  waybackurls: "/go/bin/waybackurls"
+  ffuf: "/go/bin/ffuf"
+  arjun: "arjun"
+  linkfinder: "./LinkFinder/linkfinder.py"
+
+# Retry settings (applied to all phases)
+retry:
+  max_attempts: 3
+  base_delay: 2                 # seconds
+  max_delay: 30                 # seconds
+
+# Rate limiting (requests per second, 0 = unlimited)
+rate_limit:
+  subfinder: 0
+  httpx: 0
+  katana: 0
+  gau: 0
+  waybackurls: 0
+  ffuf: 0
+  arjun: 0
+
+# Phase configuration
+phases:
+  subdomains:
+    enabled: true
+    subfinder:
+      all_sources: false        # use all passive sources (slower)
+      recursive: false          # recursive subdomain enumeration
+      timeout: 30               # seconds per source
+    crtsh:
+      enabled: true             # supplementary crt.sh query
+
+  httpx:
+    enabled: true
+    probes:
+      status_code: true
+      content_length: true
+      content_type: true
+      title: true
+      tech_detect: true
+      ip: true
+      cname: true
+      asn: true
+      cdn: true
+      probe: true
+    timeout: 10
+    threads: 50
+
+  endpoints:
+    enabled: true
+    katana:
+      depth: 3                  # crawl depth
+      js_crawl: true            # parse JS for endpoints
+      headless: false           # headless browser crawling
+      timeout: 10
+      crawl_duration: ""        # max duration (e.g., "30m")
+      max_response_size: 4194304
+
+  urls:
+    enabled: true
+    gau:
+      threads: 5
+      providers: "wayback,commoncrawl,otx,urlscan"
+    waybackurls:
+      enabled: true             # supplementary (gau already covers wayback)
+
+  params:
+    enabled: true
+    arjun:
+      method: "GET"             # GET, POST, XML, JSON
+      threads: 5
+      timeout: 15
+      passive: true             # passive parameter discovery
+
+  fuzzing:
+    enabled: false              # enable only with a wordlist
+    wordlist: ""                # path to wordlist (required)
+    ffuf:
+      match_codes: "200,301,302,403,405,500"
+      threads: 40
+      rate: 0                   # requests per second (0 = unlimited)
+      timeout: 10
+      auto_calibrate: false
+
+  js_analysis:
+    enabled: true
+    linkfinder:
+      timeout: 10
+
+  report:
+    enabled: true

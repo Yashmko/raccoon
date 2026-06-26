@@ -1,0 +1,11 @@
+# Recon output (do not commit scan results)
+recon/
+
+# LinkFinder virtualenv
+LinkFinder/venv/
+LinkFinder/__pycache__/
+LinkFinder/*.pyc
+
+# OS / IDE
+.DS_Store
+.vscode/
