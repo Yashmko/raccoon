@@ -1,4 +1,4 @@
-# Recon Pipeline
+# Raccoon
 
 Modular reconnaissance framework for authorized security assessments.
 
