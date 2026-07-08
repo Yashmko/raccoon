@@ -4,7 +4,7 @@ Modular reconnaissance framework for authorized security assessments.
 
 ## Legal Notice
 
-**This toolset is for authorized security testing only.** Unauthorized access to computer systems is illegal. Always obtain written permission before conducting any security assessment.
+**This toolset is for authorized security testing only.** Unauthorized access to computer systems is illegal and may lead to harmful consequences. Always obtain written permission before conducting any security assessment.
 
 ## Architecture
 
