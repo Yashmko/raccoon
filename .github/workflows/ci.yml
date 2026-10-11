@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shell-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Bash syntax
+        run: |
+          bash -n run.sh
+          for file in lib/*.sh phases/*.sh tests/*.sh; do
+            bash -n "$file"
+          done
+      - name: Run regression tests
+        run: bash tests/test_audit_fixes.sh
